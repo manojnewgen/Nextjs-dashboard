@@ -1,4 +1,5 @@
 import { sql } from '@vercel/postgres';
+import { unstable_noStore as noStore } from 'next/cache';
 import {
   CustomerField,
   CustomersTableType,
@@ -11,6 +12,7 @@ import {
 import { formatCurrency } from './utils';
 
 export async function fetchRevenue() {
+  noStore();
   // Add noStore() here prevent the response from being cached.
   // This is equivalent to in fetch(..., {cache: 'no-store'}).
 
@@ -34,6 +36,7 @@ export async function fetchRevenue() {
 
 export async function fetchLatestInvoices() {
   try {
+    noStore();
     const data = await sql<LatestInvoiceRaw>`
       SELECT invoices.amount, customers.name, customers.image_url, customers.email, invoices.id
       FROM invoices
@@ -54,6 +57,7 @@ export async function fetchLatestInvoices() {
 
 export async function fetchCardData() {
   try {
+    noStore();
     // You can probably combine these into a single SQL query
     // However, we are intentionally splitting them to demonstrate
     // how to initialize multiple queries in parallel with JS.
